@@ -1,0 +1,122 @@
+:root {
+    --clr-bg: white;
+    --clr-font: black;
+}
+
+@font-face {
+    font-family: myFont;
+    src: url(mssansserif8pt.ttf);
+}
+
+/*
+    1. Use a more-intuitive box-sizing model.
+  */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/*
+      2. Remove default margin
+    */
+* {
+    margin: 0;
+}
+
+/*
+      3. Allow percentage-based heights in the application
+    */
+html,
+body {
+    height: 100%;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    /* font-family: consolas; */
+    font-family: myFont;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+/*
+      Typographic tweaks!
+      4. Add accessible line-height
+      5. Improve text rendering
+    */
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--clr-bg);
+    color: var(--clr-font);
+}
+
+#svelte {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2px;
+    position: relative;
+}
+
+
+/*
+      6. Improve media defaults
+    */
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/*
+      7. Remove built-in form typography styles
+    */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/*
+      8. Avoid text overflows
+    */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}
+
+
+button,
+a {
+    cursor: pointer;
+    color: inherit;
+    background-color: inherit;
+    border: none;
+}
+
+*:disabled {
+    cursor: not-allowed;
+    opacity: 50%;
+}
+
+/*
+      9. Create a root stacking context
+    */
+#root,
+#__next {
+    isolation: isolate;
+}
+
+
+pre {
+    padding: .5em;
+}

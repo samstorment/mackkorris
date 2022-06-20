@@ -1,9 +1,7 @@
-<script>
-
-    export let title = "MacK Korris";
+<script lang="ts">
+    export let title = "Mack Korris";
     export let description = "A guy who copies and edits";
     export let permalink = "https://www.instagram.com/nogood_sharks/?hl=en";
-    
 </script>
 
 <svelte:head>
@@ -11,7 +9,7 @@
     <!-- Global Metadata -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- <link rel="icon" type="image/x-icon" href="/favicon.ico" /> -->
 
     <!-- Primary Meta Tags -->
     <title>{title}</title>
@@ -32,4 +30,5 @@
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content="https://mackkorris.vercel.app/social.png" />
 
+    <slot />
 </svelte:head>
