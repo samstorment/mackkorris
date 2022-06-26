@@ -1,5 +1,9 @@
 
-export function resizable(node: HTMLDivElement) {
+interface Params {
+    staticShrink: boolean
+}
+
+export function resizable(node: HTMLDivElement, params?: Params) {
 
     const directions = ['n','s','e','w','ne','nw','se','sw'];
 

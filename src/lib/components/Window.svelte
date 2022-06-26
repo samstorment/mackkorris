@@ -46,67 +46,61 @@
     {style} 
     use:draggable 
     use:resizable 
-    transition:scale
+    transition:scale|local
 >
-    <div class="resize-nw"></div>
-    <div class="resize-ne"></div>
-    <div class="resize-sw"></div>
-    <div class="resize-se"></div>
+    <div class="resize-handle resize-nw"></div>
+    <div class="resize-handle resize-ne"></div>
+    <div class="resize-handle resize-sw"></div>
+    <div class="resize-handle resize-se"></div>
+    <div class="resize-handle resize-n"></div>
+    <div class="resize-handle resize-s"></div>
+    <div class="resize-handle resize-e"></div>
+    <div class="resize-handle resize-w"></div>
 
-    <div class="resize-n"></div>
+    <div class="window-content">
+        <header
+            class="window-header drag-area"
+            on:dblclick={onMaximize}
+        >
+            <div class="window-header-left">
 
-    <div class="resize-middle">
+                {#if icon}
+                    <img src="" alt="Clock" />
+                {/if}
 
-        <div class="resize-w"></div>
+                <p><b>{title}</b></p>
+            </div>
 
-        <div class="window-content">
-            <header
-                class="window-header drag-area"
-                on:dblclick={onMaximize}
-            >
-                <div class="window-header-left">
+            <div class="window-header-right">
+                <Button 
+                    frozen
+                    on:click={onMinimize}
+                    style="width: 30px; height: 30px; font-size: 2rem;"
+                >
+                    -
+                </Button>
+                <Button 
+                    frozen
+                    on:click={onMaximize}
+                    style="width: 30px; height: 30px; font-size: 2rem;"
+                >
+                    &#9633;
+                </Button>
+                <Button 
+                    frozen
+                    on:click={onClose}
+                    style="width: 30px; height: 30px; font-size: 2rem;"
+                >
+                    &times;
+                </Button>
+            </div>
+        </header>
 
-                    {#if icon}
-                        <img src="" alt="Clock" />
-                    {/if}
-
-                    <p><b>{title}</b></p>
-                </div>
-
-                <div class="window-header-right">
-                    <Button 
-                        frozen
-                        on:click={onMinimize}
-                        style="width: 30px; height: 30px; font-size: 2rem;"
-                    >
-                        -
-                    </Button>
-                    <Button 
-                        frozen
-                        on:click={onMaximize}
-                        style="width: 30px; height: 30px; font-size: 2rem;"
-                    >
-                        &#9633;
-                    </Button>
-                    <Button 
-                        frozen
-                        on:click={onClose}
-                        style="width: 30px; height: 30px; font-size: 2rem;"
-                    >
-                        &times;
-                    </Button>
-                </div>
-            </header>
-
-            <div class="window-body">
-                <slot />
-            </div>    
-        </div>
-
-        <div class="resize-e"></div>
+        <div class="window-body">
+            <slot />
+        </div>    
     </div>
 
-    <div class="resize-s"></div>
 </div>
 
 <style>
@@ -116,6 +110,7 @@
         min-width: 0;
         display: flex;
         flex-direction: column;
+        outline: 2px solid black;
     }
 
     .window-header {
@@ -143,42 +138,47 @@
 
     .window-content {
         flex: 1;
+        background-color: lightblue;
     }
 
+    .resize-handle {
+        position: absolute;
+        z-index: 1;
+    }
+    
     .resize-n,
     .resize-s {
         display: flex;
-        background-color: purple;
+        /* background-color: purple; */
         height: 6px;
+        width: 100%;
     }
-
-    .resize-middle {
-        display: flex;
-        flex: 1;
-        background-color: blue;
-    }
-
     
     .resize-w,
     .resize-e {
         width: 6px;
-        background-color: orange;
+        /* background-color: orange; */
+        height: 100%;
     }
 
     .resize-n {
         cursor: n-resize;
+        top: -3px;
     }
 
     .resize-s {
         cursor: s-resize;
+        bottom: -3px;
     }
     
     .resize-e {
         cursor: e-resize;
+        right: -3px;
     }
 
     .resize-w {
         cursor: w-resize;
+        left: -3px;
     }
 
     .resize-nw,
@@ -186,32 +186,33 @@
     .resize-sw,
     .resize-se {
         position: absolute;
-        background-color: red;
+        /* background-color: red; */
         width: 6px;
         height: 6px;
+        z-index: 2;
     }
 
     .resize-nw {
-        top: 0;
-        left: 0;
+        top: -3px;
+        left: -3px;
         cursor: nw-resize;
     }
 
     .resize-ne {
-        top: 0;
-        right: 0;
+        top: -3px;
+        right: -3px;
         cursor: ne-resize;
     }
 
     .resize-sw {
-        bottom: 0;
-        left: 0;
+        bottom: -3px;
+        left: -3px;
         cursor: sw-resize;
     }
 
     .resize-se {
-        bottom: 0;
-        right: 0;
+        bottom: -3px;
+        right: -3px;
         cursor: se-resize;
     }
 </style>
