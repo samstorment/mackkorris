@@ -1,3 +1,5 @@
+import { tick } from "svelte";
+
 export function draggable(node: HTMLElement) {
 
     node.style.position = 'absolute';
@@ -15,6 +17,9 @@ export function draggable(node: HTMLElement) {
 
     let startX = 0;
     let startY = 0;
+    let offsetRight = 0
+
+    let offsetPercent = 0;
 
     let firstMove = true;
 
@@ -25,11 +30,15 @@ export function draggable(node: HTMLElement) {
         }));
 
         const box = node.getBoundingClientRect();
-        let { x, y } = box;
+        let { x, y, width } = box;
 
         startX = e.clientX - x;
         startY = e.clientY - y;
 
+        // node.style.left = `${100}px`;
+
+        offsetPercent = startX / width;
+        offsetRight = width - startX;
 
         window.addEventListener('pointermove', pointermove);
 
@@ -44,7 +53,7 @@ export function draggable(node: HTMLElement) {
         }, { once: true });
     }
 
-    function pointermove(e: PointerEvent) {
+    async function pointermove(e: PointerEvent) {
 
         if (firstMove) {
 
@@ -57,24 +66,26 @@ export function draggable(node: HTMLElement) {
 
         window.getSelection()?.removeAllRanges();
 
-        node.dispatchEvent
+        if (node.classList.contains('full')) {
+            await tick();
+        }
 
-        const box = node.getBoundingClientRect();
+        let box = node.getBoundingClientRect();
 
-        let { width, height } = box;
+        let { width, height, x, y } = box;
 
         // account for the mouses starting position so we can drag anywhere
         // within the dragNode and not just at the borders
         let top = e.clientY - startY;
-        let left = e.clientX - startX;
+        let left = e.clientX - (width * offsetPercent);
 
         // change the elements position
         node.style.top = `${top}px`;
-        node.style.left = `${left}px`;
+        node.style.left = `${left}px`;        
 
         // manually set width and height so element size doesn't respond on screen border
-        node.style.width = `${width}px`;
-        node.style.height = `${height}px`;
+        // node.style.width = `${width}px`;
+        // node.style.height = `${height}px`;
     }
 
     dragNode.addEventListener("pointerdown", pointerdown);

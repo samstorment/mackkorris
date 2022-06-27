@@ -10,24 +10,23 @@
     export let close: (e: MouseEvent) => any = () => null;
     export let minimize: (e: MouseEvent) => any = () => null;
 
-    export let t: number | null = null;
-    export let l: number | null = null;
+    export let x: number | undefined = undefined;
+    export let y: number | undefined = undefined;
+    export let width: number | undefined = undefined;
+    export let height: number | undefined = undefined;
 
     let style = '';
     let window: HTMLDivElement;
-    let header: HTMLElement;
     let full = false;
     let shrinking = false;
 
     let lastBox: DOMRect;
 
-    if (t) {
-        style += `top: ${t}px; `;
-    }
-
-    if (l) {
-        style += `left: ${l}px; `;
-    }
+    if (x) style += `top: ${x}px; `;
+    if (y) style += `left: ${y}px; `;
+    if (width) style += `width: ${width}px`;
+    if (height) style += `height: ${height}px`;
+ 
 
     onMount(async () => {
         lastBox = window.getBoundingClientRect();
@@ -49,22 +48,19 @@
     }
 
     function onMinimize(e: MouseEvent) {
+
+        console.log("MIN")
+
         e.stopPropagation();
         minimize(e);
     }
 
     function onMaximize(e: MouseEvent) {
+
+        console.log("MAX");
         
-        if (!full) {
-            growWindow();
-        }
-        else {
-            shrinkWindow();
-            
-            setTimeout(() => {
-                shrinking = !shrinking;
-            }, 1000);
-        }
+        if (!full) growWindow();
+        else shrinkWindow();
         
         full = !full;
         shrinking = !full;
@@ -72,15 +68,19 @@
 
     function growWindow() {
         lastBox = window.getBoundingClientRect();
-        window.style.top = ``;
-        window.style.left = ``;
+        window.style.top = `0`;
+        window.style.left = `0`;
     }
 
     function shrinkWindow() {
         window.style.top = `${lastBox.y}px`;
-        window.style.left = `${lastBox.x}px`;
+        window.style.left = `${lastBox.y}px`;
         window.style.width = `${lastBox.width}px`;
         window.style.height = `${lastBox.height}px`;
+
+        setTimeout(() => {
+            shrinking = !shrinking;
+        }, 1000);
     }
 </script>
 
@@ -93,7 +93,7 @@
     use:draggable 
     use:resizable 
     transition:scale|local
-    on:draggablemove={() => { if (full) { shrinkWindow(); full = !full; } }}
+    on:draggablemove={async () => full = false}
 >
     <div class="resize-handle resize-nw"></div>
     <div class="resize-handle resize-ne"></div>
@@ -143,7 +143,7 @@
     </header>
 
     <div class="window-body">
-        <pre>{JSON.stringify(lastBox, null, 4)}</pre>
+        <!-- <pre>{JSON.stringify(lastBox, null, 4)}</pre> -->
         <slot />
     </div>    
 
@@ -158,22 +158,18 @@
         display: flex;
         flex-direction: column;
         outline: 2px solid black;
-        /* overflow-y: scroll; */
-        /* top: 0;
-        left: 0; */
-
-        /* width: '';
-        height: ''; */
     }
     
     .window-body {
         flex: 1;
         background-color: lightblue;
         overflow: auto;
+        display: flex;
+        flex-direction: column;
     }
 
     .full {
-       transition: all 1s ease;
+       transition: all .5s ease;
 
        top: 0;
        left: 0;
@@ -184,8 +180,7 @@
     }
 
     .shrinking {
-        transition: all 1s ease;
-        animation-fill-mode: backwards;
+        transition: all .5s ease;
     }
 
     .window-header {
@@ -203,6 +198,8 @@
 
     .window-header-left {
         flex-shrink: 0;
+        position: sticky;
+        left: 5px;
     }
 
     .window-header-right {
@@ -210,80 +207,6 @@
         margin-left: auto;
         align-items: center;
         gap: .2em;
-    }
-
-    .resize-handle {
-        position: absolute;
         z-index: 1;
-    }
-    
-    .resize-n,
-    .resize-s {
-        display: flex;
-        background-color: purple;
-        height: 6px;
-        width: 100%;
-    }
-    
-    .resize-w,
-    .resize-e {
-        width: 6px;
-        background-color: orange;
-        height: 100%;
-    }
-
-    .resize-n {
-        cursor: n-resize;
-        top: -3px;
-    }
-
-    .resize-s {
-        cursor: s-resize;
-        bottom: -3px;
-    }
-    
-    .resize-e {
-        cursor: e-resize;
-        right: -3px;
-    }
-
-    .resize-w {
-        cursor: w-resize;
-        left: -3px;
-    }
-
-    .resize-nw,
-    .resize-ne,
-    .resize-sw,
-    .resize-se {
-        position: absolute;
-        background-color: red;
-        width: 6px;
-        height: 6px;
-        z-index: 2;
-    }
-
-    .resize-nw {
-        top: -3px;
-        left: -3px;
-        cursor: nw-resize;
-    }
-
-    .resize-ne {
-        top: -3px;
-        right: -3px;
-        cursor: ne-resize;
-    }
-
-    .resize-sw {
-        bottom: -3px;
-        left: -3px;
-        cursor: sw-resize;
-    }
-
-    .resize-se {
-        bottom: -3px;
-        right: -3px;
-        cursor: se-resize;
     }
 </style>

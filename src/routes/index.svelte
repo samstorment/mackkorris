@@ -2,6 +2,7 @@
     import Head from "$lib/components/Head.svelte";
     import Window from "$lib/components/Window.svelte";
     import { title } from "$lib/stores/title";
+    import { windows } from "$lib/stores/windows";
 
     $title = "Home";
 
@@ -17,6 +18,19 @@
 </script>
 
 <Head title="MacK Korris" />
+
+{#each $windows as w}
+    {#if w.open}
+        <Window 
+            title={w.title} 
+            close={() => w.open = false}
+            x={w.x}
+            y={w.y}
+        >
+            <svelte:component this={w.child} />
+        </Window>
+    {/if}
+{/each}
 
 <div id="page">
     <section id="mack-info" aria-labelledby="mack">
@@ -35,16 +49,6 @@
         </nav>
     </section>
 </div>
-
-{#if open}
-    <Window
-        t={100}
-        l={50}
-        close={() => open = false}
-    >
-        <div style="padding: .25em;">Hello</div>
-    </Window>
-{/if}
 
 <style>
     #page {

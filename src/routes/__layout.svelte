@@ -3,6 +3,7 @@
     import Head from '$lib/components/Head.svelte';
     import Header from '$lib/components/Header.svelte';
     import '../styles/app.css';
+    import '../styles/resizable.css';
 </script>
 
 <div id="inner-page">
