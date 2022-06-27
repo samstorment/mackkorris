@@ -91,7 +91,7 @@
     bind:this={window} 
     {style} 
     use:draggable 
-    use:resizable 
+    use:resizable={{moveWhenShrunk: true}}
     transition:scale|local
     on:draggablemove={async () => full = false}
 >

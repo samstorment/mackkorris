@@ -1,18 +1,20 @@
 
 interface Params {
-    staticShrink: boolean
+    moveWhenShrunk: boolean
 }
 
 export function resizable(node: HTMLDivElement, params?: Params) {
 
     const directions = ['n','s','e','w','ne','nw','se','sw'];
 
+    console.log(params);
+
     const destructions = directions.map(d => {
         const element = node.querySelector(`.resize-${d}`) as HTMLDivElement;
 
         const handleType = getHandle(d as Direction);
 
-        const handle = new handleType(element, node);
+        const handle = new handleType(element, node, params?.moveWhenShrunk);
 
         return () => element.removeEventListener('pointerdown', handle.pointerDown);
     });
@@ -68,12 +70,16 @@ class Handle {
 
     handle: HTMLDivElement;
     parent: HTMLDivElement;
+    moveWhenShrunk: boolean;
 
-    constructor(handle: HTMLDivElement, parent: HTMLDivElement) {
+    constructor(handle: HTMLDivElement, parent: HTMLDivElement, moveWhenShrunk=false) {
         this.handle = handle;
         this.parent = parent;
         
         this.baseBox = parent.getBoundingClientRect();
+        this.moveWhenShrunk = moveWhenShrunk;
+
+        console.log(handle);
 
         handle.addEventListener('pointerdown', this.pointerDown.bind(this));
     }
@@ -162,7 +168,7 @@ class South extends Handle {
         let height = Math.max(this.baseBox.height, newHeight);
 
         // if the element can't shrink any further
-        if (height === this.baseBox.height) {
+        if (height <= this.baseBox.height) {
 
             let top = this.startBox.height - this.baseBox.height + this.currY;
 
@@ -185,7 +191,7 @@ class East extends Handle {
         let width = Math.max(this.baseBox.width, newWidth);
 
         // if the element can't shrink any further
-        if (width === this.baseBox.width) {
+        if (width <= this.baseBox.width) {
 
             let left = this.startBox.width - this.baseBox.width + this.currX;
 
