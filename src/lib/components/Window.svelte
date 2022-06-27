@@ -74,7 +74,7 @@
 
     function shrinkWindow() {
         window.style.top = `${lastBox.y}px`;
-        window.style.left = `${lastBox.y}px`;
+        window.style.left = `${lastBox.x}px`;
         window.style.width = `${lastBox.width}px`;
         window.style.height = `${lastBox.height}px`;
 
