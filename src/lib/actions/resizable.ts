@@ -79,6 +79,8 @@ class Handle {
     }
 
     pointerDown(e: PointerEvent) {
+        if (this.shouldIgnoreEvent()) return;
+
         this.startBox = this.parent.getBoundingClientRect();
 
         this.startX = e.clientX - this.startBox.x;
@@ -95,6 +97,8 @@ class Handle {
 
     pointerMove(e: PointerEvent) {
 
+        if (this.shouldIgnoreEvent()) return;
+
         // remove highlighting while dragging
         window.getSelection()?.removeAllRanges();
 
@@ -107,6 +111,10 @@ class Handle {
 
         this.changeY = this.currY - y;
         this.changeX = this.currX - x;
+    }
+
+    shouldIgnoreEvent() {
+        return this.parent.classList.contains("full");
     }
 } 
 

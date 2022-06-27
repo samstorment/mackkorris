@@ -16,7 +16,13 @@ export function draggable(node: HTMLElement) {
     let startX = 0;
     let startY = 0;
 
+    let firstMove = true;
+
     function pointerdown(e: PointerEvent) {
+
+        node.dispatchEvent(new CustomEvent('draggablestart', {
+            detail: {}
+        }));
 
         const box = node.getBoundingClientRect();
         let { x, y } = box;
@@ -24,15 +30,34 @@ export function draggable(node: HTMLElement) {
         startX = e.clientX - x;
         startY = e.clientY - y;
 
+
         window.addEventListener('pointermove', pointermove);
 
         window.addEventListener('pointerup', () => {
+            firstMove = true;
+
+            node.dispatchEvent(new CustomEvent('draggablestop', {
+                detail: {}
+            }));
+
             window.removeEventListener('pointermove', pointermove);
         }, { once: true });
     }
 
     function pointermove(e: PointerEvent) {
+
+        if (firstMove) {
+
+            node.dispatchEvent(new CustomEvent('draggablemove', {
+                detail: {}
+            }));
+
+            firstMove = false;
+        }
+
         window.getSelection()?.removeAllRanges();
+
+        node.dispatchEvent
 
         const box = node.getBoundingClientRect();
 

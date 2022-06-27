@@ -11,7 +11,7 @@
     if (inset) cssClass += 'btn-inset';
 </script>
 
-<button {type} class={`btn ${cssClass}`} {style} {disabled} on:click>
+<button {type} class={`btn ${cssClass}`} {style} {disabled} on:click on:pointerdown|stopPropagation>
     {#if icon}
         <img src={icon} alt={"Icon"} />
     {/if}
@@ -22,7 +22,8 @@
     .btn {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
+        text-align: center;
         gap: .25em;
         padding: .2em .3em;
         align-items: center;
@@ -32,6 +33,12 @@
         border-bottom: 3px solid rgb(50, 50, 50);
         background-color: lightgray;
         color: black;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    .btn > * {
+        text-overflow: ellipsis;
     }
 
     .btn:active,
@@ -52,6 +59,7 @@
 
     img {
         max-width: 28px;
+        flex-shrink: 0;
     }
 
     .btn-static:active {

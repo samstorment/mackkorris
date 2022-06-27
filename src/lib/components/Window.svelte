@@ -3,6 +3,7 @@
     import { resizable } from "$lib/actions/resizable";
     import { fade, slide, scale } from "svelte/transition";
     import Button from "$lib/components/buttons/Button.svelte";
+    import { onMount, tick } from "svelte";
 
     export let title = "Untitled Window";
     export let icon: string | null = null;
@@ -15,9 +16,31 @@
     let style = '';
     let window: HTMLDivElement;
     let header: HTMLElement;
+    let full = false;
+    let shrinking = false;
 
-    if (t) style += `top: ${t}px; `;
-    if (l) style += `left: ${l}px; `;
+    let lastBox: DOMRect;
+
+    if (t) {
+        style += `top: ${t}px; `;
+    }
+
+    if (l) {
+        style += `left: ${l}px; `;
+    }
+
+    onMount(async () => {
+        lastBox = window.getBoundingClientRect();
+        console.log("HEIGHT BEFORE", window.scrollHeight);
+
+        await tick();
+
+        console.log("HEIGHT AFTER", window.scrollHeight);
+        window.style.height = `${window.scrollHeight}px`;
+
+
+        // lastBox = window.getBoundingClientRect();
+    })
 
     function onClose(e: MouseEvent) {
         e.stopPropagation();
@@ -31,22 +54,46 @@
     }
 
     function onMaximize(e: MouseEvent) {
-        window.style.top = '0';
-        window.style.left = '0';
-        window.style.bottom = '0';
-        window.style.right = '0';
-        window.style.width = '';
-        window.style.height = '';
+        
+        if (!full) {
+            growWindow();
+        }
+        else {
+            shrinkWindow();
+            
+            setTimeout(() => {
+                shrinking = !shrinking;
+            }, 1000);
+        }
+        
+        full = !full;
+        shrinking = !full;
+    }
+
+    function growWindow() {
+        lastBox = window.getBoundingClientRect();
+        window.style.top = ``;
+        window.style.left = ``;
+    }
+
+    function shrinkWindow() {
+        window.style.top = `${lastBox.y}px`;
+        window.style.left = `${lastBox.x}px`;
+        window.style.width = `${lastBox.width}px`;
+        window.style.height = `${lastBox.height}px`;
     }
 </script>
 
 <div 
     class="window" 
+    class:full
+    class:shrinking
     bind:this={window} 
     {style} 
     use:draggable 
     use:resizable 
     transition:scale|local
+    on:draggablemove={() => { if (full) { shrinkWindow(); full = !full; } }}
 >
     <div class="resize-handle resize-nw"></div>
     <div class="resize-handle resize-ne"></div>
@@ -57,49 +104,48 @@
     <div class="resize-handle resize-e"></div>
     <div class="resize-handle resize-w"></div>
 
-    <div class="window-content">
-        <header
-            class="window-header drag-area"
-            on:dblclick={onMaximize}
-        >
-            <div class="window-header-left">
+    <header
+        class="window-header drag-area"
+        on:dblclick={onMaximize}
+    >
+        <div class="window-header-left">
 
-                {#if icon}
-                    <img src="" alt="Clock" />
-                {/if}
+            {#if icon}
+                <img src="" alt="Clock" />
+            {/if}
 
-                <p><b>{title}</b></p>
-            </div>
+            <p><b>{title}</b></p>
+        </div>
 
-            <div class="window-header-right">
-                <Button 
-                    frozen
-                    on:click={onMinimize}
-                    style="width: 30px; height: 30px; font-size: 2rem;"
-                >
-                    -
-                </Button>
-                <Button 
-                    frozen
-                    on:click={onMaximize}
-                    style="width: 30px; height: 30px; font-size: 2rem;"
-                >
-                    &#9633;
-                </Button>
-                <Button 
-                    frozen
-                    on:click={onClose}
-                    style="width: 30px; height: 30px; font-size: 2rem;"
-                >
-                    &times;
-                </Button>
-            </div>
-        </header>
+        <div class="window-header-right">
+            <Button 
+                frozen
+                on:click={onMinimize}
+                style="width: 30px; height: 30px; font-size: 2rem; justify-content: center;"
+            >
+                -
+            </Button>
+            <Button 
+                frozen
+                on:click={onMaximize}
+                style="width: 30px; height: 30px; font-size: 2rem; justify-content: center;"
+            >
+                &#9633;
+            </Button>
+            <Button 
+                frozen
+                on:click={onClose}
+                style="width: 30px; height: 30px; font-size: 2rem; justify-content: center;"
+            >
+                &times;
+            </Button>
+        </div>
+    </header>
 
-        <div class="window-body">
-            <slot />
-        </div>    
-    </div>
+    <div class="window-body">
+        <pre>{JSON.stringify(lastBox, null, 4)}</pre>
+        <slot />
+    </div>    
 
 </div>
 
@@ -108,9 +154,38 @@
         position: absolute;
         background-color: white;
         min-width: 0;
+        min-height: max-content;
         display: flex;
         flex-direction: column;
         outline: 2px solid black;
+        /* overflow-y: scroll; */
+        /* top: 0;
+        left: 0; */
+
+        /* width: '';
+        height: ''; */
+    }
+    
+    .window-body {
+        flex: 1;
+        background-color: lightblue;
+        overflow: auto;
+    }
+
+    .full {
+       transition: all 1s ease;
+
+       top: 0;
+       left: 0;
+       right: 0;
+       bottom: 0;
+       min-width: calc(100%);
+       min-height: calc(100%);
+    }
+
+    .shrinking {
+        transition: all 1s ease;
+        animation-fill-mode: backwards;
     }
 
     .window-header {
@@ -123,6 +198,7 @@
         border-bottom: 2px solid black;
         padding: .2em;
         user-select: none;
+        position: sticky;
     }
 
     .window-header-left {
@@ -136,11 +212,6 @@
         gap: .2em;
     }
 
-    .window-content {
-        flex: 1;
-        background-color: lightblue;
-    }
-
     .resize-handle {
         position: absolute;
         z-index: 1;
@@ -149,7 +220,7 @@
     .resize-n,
     .resize-s {
         display: flex;
-        /* background-color: purple; */
+        background-color: purple;
         height: 6px;
         width: 100%;
     }
@@ -157,7 +228,7 @@
     .resize-w,
     .resize-e {
         width: 6px;
-        /* background-color: orange; */
+        background-color: orange;
         height: 100%;
     }
 
@@ -186,7 +257,7 @@
     .resize-sw,
     .resize-se {
         position: absolute;
-        /* background-color: red; */
+        background-color: red;
         width: 6px;
         height: 6px;
         z-index: 2;
