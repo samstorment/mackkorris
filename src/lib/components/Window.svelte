@@ -3,7 +3,8 @@
     import { resizable } from "$lib/actions/resizable";
     import { fade, slide, scale } from "svelte/transition";
     import Button from "$lib/components/buttons/Button.svelte";
-    import { onMount, tick } from "svelte";
+    import { onDestroy, onMount, tick } from "svelte";
+import { browser } from "$app/env";
 
     export let title = "Untitled Window";
     export let icon: string | null = null;
@@ -22,8 +23,8 @@
 
     let lastBox: DOMRect;
 
-    if (x) style += `top: ${x}px; `;
-    if (y) style += `left: ${y}px; `;
+    if (x) style += `left: ${x}px; `;
+    if (y) style += `top: ${y}px; `;
     if (width) style += `width: ${width}px`;
     if (height) style += `height: ${height}px`;
  
@@ -40,6 +41,20 @@
 
         // lastBox = window.getBoundingClientRect();
     })
+
+    onDestroy(() => {
+
+        if (!browser) return;
+
+        const box = window.getBoundingClientRect();
+
+        // x = box.left;
+        // y = box.top;
+        // width = box.width;
+        // height = box.height;        
+
+
+    });
 
     function onClose(e: MouseEvent) {
         e.stopPropagation();
@@ -91,7 +106,7 @@
     bind:this={window} 
     {style} 
     use:draggable 
-    use:resizable={{moveWhenShrunk: true}}
+    use:resizable={{moveWhenShrunk: false}}
     transition:scale|local
     on:draggablemove={async () => full = false}
 >
@@ -104,17 +119,19 @@
     <div class="resize-handle resize-e"></div>
     <div class="resize-handle resize-w"></div>
 
-    <header
-        class="window-header drag-area"
-        on:dblclick={onMaximize}
-    >
-        <div class="window-header-left">
+    <header class="window-header">
+        <div 
+            class="window-header-left drag-area" 
+            on:dblclick={onMaximize}
+        >
+            <div class="window-title">
 
-            {#if icon}
-                <img src="" alt="Clock" />
-            {/if}
-
-            <p><b>{title}</b></p>
+                {#if icon}
+                    <img src="" alt="Clock" />
+                {/if}
+                
+                <p><b>{title}</b></p>
+            </div>
         </div>
 
         <div class="window-header-right">
@@ -143,7 +160,7 @@
     </header>
 
     <div class="window-body">
-        <!-- <pre>{JSON.stringify(lastBox, null, 4)}</pre> -->
+        <!-- <pre>{JSON.stringify($tabs, null, 4)}</pre> -->
         <slot />
     </div>    
 
@@ -186,20 +203,29 @@
     .window-header {
         display: flex;
         flex-shrink: 0;
-        gap: 1em;
         align-items: center;
         background-color: teal;
         color: white;
         border-bottom: 2px solid black;
-        padding: .2em;
         user-select: none;
         position: sticky;
     }
 
     .window-header-left {
-        flex-shrink: 0;
+        background-color: green;
+        flex: 1;
+        padding: .3em;
+        position: relative;
+    }
+    
+    .window-title {
+        width: min-content;
         position: sticky;
         left: 5px;
+    }
+
+    .full .window-header-left {
+        left: auto;
     }
 
     .window-header-right {
@@ -208,5 +234,6 @@
         align-items: center;
         gap: .2em;
         z-index: 1;
+        padding-right: .2em;
     }
 </style>

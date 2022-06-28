@@ -17,7 +17,7 @@ import { onMount } from "svelte";
 
     onMount(() => {
         setInterval(() => {
-            if (second >= 9) second = -1;
+            if (second >= 59) second = -1;
             second += 1;
         }, 1000);
     })

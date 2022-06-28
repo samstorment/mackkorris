@@ -168,7 +168,7 @@ class South extends Handle {
         let height = Math.max(this.baseBox.height, newHeight);
 
         // if the element can't shrink any further
-        if (height <= this.baseBox.height) {
+        if (height <= this.baseBox.height && this.moveWhenShrunk) {
 
             let top = this.startBox.height - this.baseBox.height + this.currY;
 
@@ -191,7 +191,7 @@ class East extends Handle {
         let width = Math.max(this.baseBox.width, newWidth);
 
         // if the element can't shrink any further
-        if (width <= this.baseBox.width) {
+        if (width <= this.baseBox.width && this.moveWhenShrunk) {
 
             let left = this.startBox.width - this.baseBox.width + this.currX;
 
@@ -204,8 +204,8 @@ class East extends Handle {
 
 class NorthWest extends Handle {
 
-    north = new North(this.handle, this.parent);
-    west = new West(this.handle, this.parent);
+    north = new North(this.handle, this.parent, this.moveWhenShrunk);
+    west = new West(this.handle, this.parent, this.moveWhenShrunk);
 
     pointerMove(e: PointerEvent): void {
         this.north.pointerMove.bind(this);
@@ -215,8 +215,8 @@ class NorthWest extends Handle {
 
 class NorthEast extends Handle {
 
-    north = new North(this.handle, this.parent);
-    east = new East(this.handle, this.parent);
+    north = new North(this.handle, this.parent, this.moveWhenShrunk);
+    east = new East(this.handle, this.parent, this.moveWhenShrunk);
 
     pointerMove(e: PointerEvent): void {
         this.north.pointerMove.bind(this);
@@ -226,8 +226,8 @@ class NorthEast extends Handle {
 
 class SouthWest extends Handle {
 
-    south = new South(this.handle, this.parent);
-    west = new West(this.handle, this.parent);
+    south = new South(this.handle, this.parent, this.moveWhenShrunk);
+    west = new West(this.handle, this.parent, this.moveWhenShrunk);
 
     pointerMove(e: PointerEvent): void {
         this.south.pointerMove.bind(this);
@@ -237,8 +237,8 @@ class SouthWest extends Handle {
 
 class SouthEast extends Handle {
 
-    south = new South(this.handle, this.parent);
-    east = new East(this.handle, this.parent);
+    south = new South(this.handle, this.parent, this.moveWhenShrunk);
+    east = new East(this.handle, this.parent, this.moveWhenShrunk);
 
     pointerMove(e: PointerEvent): void {
         this.south.pointerMove.bind(this);

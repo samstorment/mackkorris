@@ -24,8 +24,8 @@
         <Window 
             title={w.title} 
             close={() => w.open = false}
-            x={w.x}
-            y={w.y}
+            bind:x={w.x}
+            bind:y={w.y}
         >
             <svelte:component this={w.child} />
         </Window>

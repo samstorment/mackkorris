@@ -1,3 +1,9 @@
+:root {
+    --resize-clr-sides: purple;
+    --resize-clr-poles: orange;
+    --resize-clr-corners: red;
+}
+
 .resize-handle {
     position: absolute;
     z-index: 1;
@@ -5,7 +11,7 @@
 
 .resize-n,
 .resize-s {
-    background-color: purple;
+    background-color: var(--resize-clr-poles);
     height: 6px;
     width: 100%;
 }
@@ -13,7 +19,7 @@
 .resize-w,
 .resize-e {
     width: 6px;
-    background-color: orange;
+    background-color: var(--resize-clr-sides);
     height: 100%;
 }
 
@@ -42,7 +48,7 @@
 .resize-sw,
 .resize-se {
     position: absolute;
-    background-color: red;
+    background-color: var(--resize-clr-corners);
     width: 6px;
     height: 6px;
     z-index: 2;

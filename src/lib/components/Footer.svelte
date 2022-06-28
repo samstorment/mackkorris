@@ -1,7 +1,7 @@
 <script lang="ts">
     import { tabs } from "$lib/stores/tabs";
+    import { windows } from "$lib/stores/windows";
     import Button from "./buttons/Button.svelte";
-
 
 </script>
 
@@ -17,6 +17,13 @@
         frozen
         inset
         style="margin-left: auto;"
+        on:click={() => {
+            const [ tab, ...rest ] = $windows;
+            $windows = [
+                { ...tab, open: !tab.open },
+                ...rest
+            ]
+        }}
     >
         11:59 PM
     </Button>
