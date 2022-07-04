@@ -1,7 +1,11 @@
 <script lang="ts">
+    import { title as tit } from '$lib/stores/title';
+
     export let title = "Mack Korris";
     export let description = "A guy who copies and edits";
     export let permalink = "https://www.instagram.com/nogood_sharks/?hl=en";
+
+    $tit = title;
 </script>
 
 <svelte:head>

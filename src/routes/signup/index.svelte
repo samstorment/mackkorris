@@ -13,5 +13,4 @@
     import Auth from "$lib/components/Auth.svelte";
 </script>
 
-
-<Auth title="Log In" />
+<Auth title="Sign Up" />

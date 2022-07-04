@@ -10,7 +10,7 @@ declare global {
 		// interface Locals {}
 		// interface Platform {}
 		interface Session {
-			user?: User
+			user?: Zod.infer<typeof User>
 		}
 		// interface Stuff {}
 		

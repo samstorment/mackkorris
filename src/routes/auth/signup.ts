@@ -1,7 +1,7 @@
 import supabase from '$lib/db';
 import db from '$lib/db';
-import User, { Profile, SignInUser, SupabaseUser } from '$lib/models/User';
-import { z } from 'zod';
+import User, { Profile, SignInUser } from '$lib/models/User';
+import type { z } from 'zod';
 import { respond } from './_respond';
 
 export async function post({ request }) {
@@ -24,11 +24,12 @@ export async function post({ request }) {
             .eq('id', session?.user.id)
             .single();
 
+        if (profileError) throw profileError;
+
         const user = User.parse({ ...session.user, profile });
         
-        return respond(user, null);
+        return respond(user);
     } catch (err: any) {
-        return respond(null, err.message);
+        return respond(undefined, err.message);
     }
-
 }

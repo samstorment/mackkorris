@@ -18,13 +18,13 @@ export const Profile = z.object({
     username: z.string().min(3),
     display_name: z.string().min(3),
     updated_at: dateSchema,
-    bio: z.string().max(200).optional(),
-    avatar_url: z.string().url().optional(),
-    website_url: z.string().url().optional(),
-    twitter_url: z.string().url().optional(),
-    instagram_url: z.string().url().optional(),
-    tiktok_url: z.string().url().optional(),
-    youtube_url: z.string().url().optional()
+    bio: z.string().max(200).nullable(),
+    avatar_url: z.string().url().nullable(),
+    website_url: z.string().url().nullable(),
+    twitter_url: z.string().url().nullable(),
+    instagram_url: z.string().url().nullable(),
+    tiktok_url: z.string().url().nullable(),
+    youtube_url: z.string().url().nullable()
 });
 
 const User = SupabaseUser.extend({

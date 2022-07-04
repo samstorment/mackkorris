@@ -1,16 +1,35 @@
-export function respond(user, error, status=401) {
+import type { ApiError, User } from "@supabase/supabase-js";
+import db from '$lib/db';
+import type { Profile } from "$lib/models/User";
+import AuthUser from "$lib/models/User";
 
-    if (error) {
+export async function respond(
+	user: User | null,
+	error: ApiError | null, 
+	status = 401
+) {
+
+	if (!user || error) {
 		return { 
 			status, 
-			body: {
-				error
-			} 
+			body: { 
+				error: error || "Auth Failed" 
+			}
 		};
 	}
 
+    const { data: profile } = await db
+        .from<Zod.infer<typeof Profile>>('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+    const authUser = AuthUser.parse({ ...user, profile });
+
+	console.log(authUser);
+
 	const value = Buffer
-		.from(JSON.stringify(user))
+		.from(JSON.stringify(authUser))
 		.toString('base64');
 
 	return {
@@ -18,7 +37,7 @@ export function respond(user, error, status=401) {
 			'set-cookie': `user=${value}; Path=/; HttpOnly`
 		},
 		body: {
-			user,
+			user: authUser,
 			error
 		}
 	};

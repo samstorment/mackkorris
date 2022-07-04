@@ -1,10 +1,9 @@
 <script>
     import Head from "$lib/components/Head.svelte";
     import Window from "$lib/components/Window.svelte";
-    import { title } from "$lib/stores/title";
     import { windows } from "$lib/stores/windows";
+    import { session } from '$app/stores';
 
-    $title = "Home";
 
     const links = [
         { src: '/blog.png', href: '/blog', text: 'Blog Posts'},
@@ -18,6 +17,8 @@
 </script>
 
 <Head title="MacK Korris" />
+
+<pre>{JSON.stringify($session.user, null, 4)}</pre>
 
 {#each $windows as w}
     {#if w.open}
