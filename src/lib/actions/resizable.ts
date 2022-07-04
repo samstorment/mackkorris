@@ -7,8 +7,6 @@ export function resizable(node: HTMLDivElement, params?: Params) {
 
     const directions = ['n','s','e','w','ne','nw','se','sw'];
 
-    console.log(params);
-
     const destructions = directions.map(d => {
         const element = node.querySelector(`.resize-${d}`) as HTMLDivElement;
 
@@ -78,8 +76,6 @@ class Handle {
         
         this.baseBox = parent.getBoundingClientRect();
         this.moveWhenShrunk = moveWhenShrunk;
-
-        console.log(handle);
 
         handle.addEventListener('pointerdown', this.pointerDown.bind(this));
     }

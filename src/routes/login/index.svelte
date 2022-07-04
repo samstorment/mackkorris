@@ -1,47 +1,61 @@
 <script lang="ts">
     import db from '$lib/db';
+    import { session } from '$app/stores';
+    import User, { Profile } from '$lib/models/User';
+    import { z } from 'zod';
+    import { post } from '$lib/util/http';
+    import { goto } from '$app/navigation';
 
-    let loading = false
-    let email = '';
-    let err: string;
-    let message = '';
-    
-    async function login() {
-        try {
-            loading = true
+    export let email = '';
+    export let password = '';
+    export let message = '';
+    export let title: 'Sign Up' | 'Sign In';
 
-            const { error, ...rest } = await db.auth.signIn({ email });
+    let error = '';
+    let submitting = false;
 
-            console.log("REST", rest);
+    async function submit() {
 
-            if (error) throw error
+        submitting = true;
 
-            message = 'Check your email for a magic login link!';
+        const { user, error: err } = await post(`/auth/signup`, {
+            email, password
+        });
 
-        } catch (error: any) {
-            err = error.error_description || error.message || 'Unknown Error';
-        } finally {
-            loading = false
+        if (err) {
+            submitting = false;
+            return error = err;
         }
-    }
+
+        $session.user = user;
+
+        submitting = false;
+        goto('/');
+	};
+
 </script>
 
 <div id="page">
 
-    <form on:submit|preventDefault={login}>
-        <h1>Login</h1>
+    <form method="post">
+        <h1>{title}</h1>
             
         <div class="form-row">
             <label for="email">Email</label>
-            <input bind:value={email} id="email" type="email" required />
+            <input bind:value={email} id="email" type="email" name="email" required />
         </div>
 
-        {#if err}
-            <div style="color: red;">Error: {err}</div>
+        <div class="form-row">
+            <label for="password">Password</label>
+            <input bind:value={password} id="password" type="password" name="password" required />
+        </div>
+
+        {#if error}
+            <div style="color: red;">{error}</div>
         {/if}
         
-        <button type="submit" disabled={loading}>
-            {loading ? "Loading" : "Request Magic Link"}
+        <button type="submit" disabled={submitting}>
+            Submit
         </button>
     </form>
 </div>

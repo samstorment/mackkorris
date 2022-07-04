@@ -4,7 +4,7 @@
     import { fade, slide, scale } from "svelte/transition";
     import Button from "$lib/components/buttons/Button.svelte";
     import { onDestroy, onMount, tick } from "svelte";
-import { browser } from "$app/env";
+    import { browser } from "$app/env";
 
     export let title = "Untitled Window";
     export let icon: string | null = null;
@@ -31,13 +31,10 @@ import { browser } from "$app/env";
 
     onMount(async () => {
         lastBox = window.getBoundingClientRect();
-        console.log("HEIGHT BEFORE", window.scrollHeight);
 
         await tick();
 
-        console.log("HEIGHT AFTER", window.scrollHeight);
         window.style.height = `${window.scrollHeight}px`;
-
 
         // lastBox = window.getBoundingClientRect();
     })
@@ -106,7 +103,7 @@ import { browser } from "$app/env";
     bind:this={window} 
     {style} 
     use:draggable 
-    use:resizable={{moveWhenShrunk: false}}
+    use:resizable={{moveWhenShrunk: true}}
     transition:scale|local
     on:draggablemove={async () => full = false}
 >
