@@ -18,8 +18,6 @@
 
 <Head title="MacK Korris" />
 
-<pre>{JSON.stringify($session.user, null, 4)}</pre>
-
 {#each $windows as w}
     {#if w.open}
         <Window 

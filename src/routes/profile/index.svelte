@@ -32,9 +32,12 @@
 <div id="page">
     <form on:submit|preventDefault={() => 0}>
 
-        {#if user.profile?.avatar_url}
-            <img src={user.profile.avatar_url} alt="Profile Picture">
-        {/if}
+        <div class="image-row">
+            <img src={user.avatar_url ?? '/avatar.png'} alt="Profile" />
+            <label for="avatar" tabindex="0">Upload</label>
+            <input type="file" id="avatar" name="avatar" />
+        </div>
+
 
         <div class="form-row">
             <label for="email">Email</label>
@@ -43,19 +46,38 @@
 
         <div class="form-row">
             <label for="username">Username</label>
-            <input id="username" bind:value={user.profile.username} >
+            <input id="username" bind:value={user.username} >
         </div>
 
         <div class="form-row">
             <label for="displayName">Display Name</label>
-            <input id="displayName" bind:value={user.profile.display_name} >
+            <input id="displayName" bind:value={user.display_name} >
         </div>
 
         <div class="form-row">
             <label for="bio">Bio</label>
-            <textarea id="bio" bind:value={profile.bio}></textarea>
+            <textarea id="bio" bind:value={user.bio}></textarea>
         </div>
 
+        <div class="form-row">
+            <label for="website">Website</label>
+            <input id="website" bind:value={user.website_url} />
+        </div>
+
+        <div class="form-row">
+            <label for="instagram">Instagram</label>
+            <input id="instagram" bind:value={user.instagram_url} />
+        </div>
+
+        <div class="form-row">
+            <label for="twitter">Twitter</label>
+            <input id="twitter" bind:value={user.twitter_url} />
+        </div>
+
+        <div class="form-row">
+            <label for="tiktok">TikTok</label>
+            <input id="tiktok" bind:value={user.tiktok_url} />
+        </div>
     </form>
 
 </div>
@@ -70,7 +92,8 @@
     }
 
     img {
-        max-width: 200px;
+        border: 2px solid lightgray;
+        width: 200px;
         border-radius: 50%;
         align-self: center;
     }
@@ -79,6 +102,23 @@
         display: flex;
         flex-direction: column;
         gap: 1em;
+    }
+
+    .image-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .image-row label {
+        border: 1px solid lightgray;
+        padding: .5em 1em;
+        cursor: pointer;
+    }
+
+    .image-row input {
+        display: none;
     }
 
     .form-row {

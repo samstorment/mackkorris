@@ -21,7 +21,7 @@ export const SupabaseUser = z.object({
     id,
     email,
     created_at: dateSchema,
-    confirmed_at: dateSchema.nullable()
+    email_confirmed_at: dateSchema.nullable()
 });
 
 export const Profile = z.object({

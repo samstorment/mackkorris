@@ -33,26 +33,35 @@ export async function post({ request }) {
         const { data: existingUsername } = await db
             .from<z.infer<typeof Profile>>('profiles')
             .select('username')
-            .ilike('username', signupUser.username);
+            .ilike('username', signupUser.username)
+            .single();
 
         if (existingUsername) throw new Error("Username already exists");
+
+        const { user, error, session } = await db.auth.signUp(signupUser);
         
-        const { error, session } = await db.auth.signUp(signupUser);
+        console.log("USER, ERROR, SESSION", user, error, session);
 
-        if (!session?.user || error) throw error;
+        if (!user || error) throw error;
 
-        const { data: profile } = await db
+
+        const { data: profile, error: profileError } = await db
             .from<z.infer<typeof Profile>>('profiles')
             .insert([{
-                id: session.user.id, 
-                ...signupUser 
+                id: user.id,
+                username: signupUser.username,
+                display_name: signupUser.display_name
             }])
             .single();
 
-        const user = User.parse({ ...session.user, ...profile });
+        if (profileError) throw profileError;
+
+        console.log("PROFILE", profile);
+
+        const userWithProfile = User.parse({ ...user, ...profile });
 
         const value = Buffer
-            .from(JSON.stringify(user))
+            .from(JSON.stringify(userWithProfile))
             .toString('base64');
 
         return {
@@ -64,6 +73,8 @@ export async function post({ request }) {
         };
 
     } catch (e: any) {
+        console.log("ERROR", e.message);
+
         return {
             status: 401,
             body: {
