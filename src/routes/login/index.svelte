@@ -1,17 +1,42 @@
-<script lang="ts" context="module">
-    export function load({ session }) {
 
-		if (session.user) {
-			return { status: 302, redirect: `/` };
-		}
+<form method="post">
+	<h2>Log In</h2>
 
-		return {};
+	<div>
+		<label for="email">Email</label>
+		<input type="email" id="email" name="email" required>
+	</div>
+
+	<div>
+		<label for="password">Password</label>
+		<input type="password" id="password" name="password" required>
+	</div>
+
+	<button type="submit">Log In</button>
+</form>
+
+<style>
+	form {
+		margin: 0 auto;
+		width: 100%;
+		max-width: 500px;
+		padding: 1em;
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 	}
-</script>
 
-<script>
-    import Auth from "$lib/components/Auth.svelte";
-</script>
+	h2 {
+		text-align: center;
+	}
 
+	div {
+		display: flex;
+		flex-direction: column;
+	}
 
-<Auth title="Log In" />
+	button {
+		border: 2px solid black;
+		padding: .25em 0;
+	}
+</style>

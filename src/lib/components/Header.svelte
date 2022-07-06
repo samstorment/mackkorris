@@ -7,16 +7,15 @@
     <a href="/">Home</a>
     <h1>{$title}</h1>
 
-    {#if $session.user}
-        <a href="/profile">
-            {$session.user.profile?.displayName ?? 'Profile'}
-        </a>
-    {:else}
-        <div class="auth-links">
-            <a href="login">Log In</a>
-            <a href="login">Sign Up</a>
-        </div>
-    {/if}
+    <div class="auth-links">
+        {#if $session.user}
+            <a href="/auth/signout">Sign Out</a>
+            <a href="/profile">Profile</a>
+        {:else}
+            <a href="/login">Log In</a>
+            <a href="/signup">Sign Up</a>
+        {/if}
+    </div>
 
 </header>
 

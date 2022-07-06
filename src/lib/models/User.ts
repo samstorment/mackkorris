@@ -1,34 +1,43 @@
 import { z } from "zod";
 import { dateSchema } from "./ZodUtils";
 
-export const SupabaseUser = z.object({
-    id: z.string().uuid(),
-    email: z.string().email(),
-    created_at: dateSchema.optional(),
-    confirmed_at: dateSchema
-});
+const id = z.string().uuid();
+const email = z.string().min(1).max(400).email();
+const password = z.string().min(6).max(50);
+const username = z.string().min(3).max(20);
+const display_name = z.string().min(3).max(100);
+const profileUrl = z.string().url().nullable();
 
-export const SignInUser = z.object({
-    email: z.string().email().min(1),
-    password: z.string().min(1)
+export const LoginUser = z.object({ email, password });
+
+export const SignupUser = LoginUser.merge(
+    z.object({ 
+        username, 
+        display_name 
+    })
+);
+
+export const SupabaseUser = z.object({
+    id,
+    email,
+    created_at: dateSchema,
+    confirmed_at: dateSchema.nullable()
 });
 
 export const Profile = z.object({
-    id: z.string().uuid(),
-    username: z.string().min(3),
-    display_name: z.string().min(3),
+    id,
+    username,
+    display_name,
     updated_at: dateSchema,
     bio: z.string().max(200).nullable(),
-    avatar_url: z.string().url().nullable(),
-    website_url: z.string().url().nullable(),
-    twitter_url: z.string().url().nullable(),
-    instagram_url: z.string().url().nullable(),
-    tiktok_url: z.string().url().nullable(),
-    youtube_url: z.string().url().nullable()
+    avatar_url: profileUrl,
+    website_url: profileUrl,
+    twitter_url: profileUrl,
+    instagram_url: profileUrl,
+    tiktok_url: profileUrl,
+    youtube_url: profileUrl
 });
 
-const User = SupabaseUser.extend({
-    profile: Profile.optional()
-});
+const User = SupabaseUser.merge(Profile);
 
 export default User;
